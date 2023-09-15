@@ -1,54 +1,47 @@
 import * as React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { useChatGpt } from 'react-native-chatgpt';
-import { Button } from '@rneui/themed';
+import { Button, Image, Text } from '@rneui/themed';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const Login = (props) => {
-  const {navigation} = props;
+  const { navigation } = props;
   const { status, login } = useChatGpt();
   if (status === 'initializing') return null;
   return (
     <View style={styles.container}>
       <LinearGradient
         // Background Linear Gradient
-        colors={['#ddd6f3', 'rgba(250,172,168, 0.8)']}
+        colors={['#3e6279', '#87aba9']}
         style={styles.background}
+      />
+      <Text h2 style={{ marginBottom: 5, textAlign: 'center', color: '#b0d8d6' }}>
+        Head 2 Head
+      </Text>
+      <Text h6 style={{ marginBottom: 20, textAlign: 'center', color: '#b0d8d6' }}>
+        Rank movies randomly picked by ChatGPT
+      </Text>
+      <Image
+        style={{ height: 100, width: 100, marginBottom: 10 }}
+        source={require('../../assets/icon.png')}
+        PlaceholderContent={<ActivityIndicator />}
       />
       <Button
         onPress={() => {
-          if(status === 'logged-out') {
+          if (status === 'logged-out') {
             login();
           } else {
-            navigation.navigate('ChatGPTGame');
+            navigation.navigate('Play');
           }
         }}
-        title="Play with ChatGPT"
-        buttonStyle={{
-          backgroundColor: 'rgba(78, 116, 289, 1)',
-          borderRadius: 3,
-        }}
-        containerStyle={{
-          width: 200,
-          marginHorizontal: 50,
-          marginVertical: 10,
-        }}
+        title="Play"
       />
-      <Button
+      {/* <Button
         onPress={() => {
           navigation.navigate('OfflineGame');
         }}
         title="Play offline"
-        buttonStyle={{
-          backgroundColor: 'rgba(78, 116, 289, 1)',
-          borderRadius: 3,
-        }}
-        containerStyle={{
-          width: 200,
-          marginHorizontal: 50,
-          marginVertical: 10,
-        }}
-      />
+      /> */}
     </View>
   );
 };
@@ -58,7 +51,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'orange',
   },
   image: {
     alignSelf: 'center',

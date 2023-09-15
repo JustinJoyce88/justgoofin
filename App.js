@@ -24,9 +24,9 @@ const App = () => {
           <PersistGate persistor={myPersistor}>
             <SafeAreaView style={styles.container}>
               <NavigationContainer>
-              <Stack.Navigator initialRouteName="Landing">
-                <Stack.Screen name="Landing" component={Landing} />
-                <Stack.Screen name="ChatGPTGame" component={ChatGPTGame} />
+              <Stack.Navigator initialRouteName="Home">
+                <Stack.Screen name="Home" component={Landing} />
+                <Stack.Screen name="Play" component={ChatGPTGame} />
                 <Stack.Screen name="OfflineGame" component={OfflineGame} />
               </Stack.Navigator>
               </NavigationContainer>
