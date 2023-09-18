@@ -7,9 +7,9 @@ export const setLoading = payload => {
   };
 };
 
-export const setLoggedIn = payload => {
+export const setMovieAmount = payload => {
   return {
-    type: constant.LOGGED_IN,
+    type: constant.MOVIE_AMOUNT,
     payload,
   };
 };

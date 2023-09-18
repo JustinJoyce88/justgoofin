@@ -3,6 +3,7 @@ import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { useChatGpt } from 'react-native-chatgpt';
 import { Button, Image, Text } from '@rneui/themed';
 import { LinearGradient } from 'expo-linear-gradient';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Login = (props) => {
   const { navigation } = props;
@@ -21,27 +22,45 @@ const Login = (props) => {
       <Text h6 style={{ marginBottom: 20, textAlign: 'center', color: '#b0d8d6' }}>
         Rank movies randomly picked by ChatGPT
       </Text>
-      <Image
-        style={{ height: 100, width: 100, marginBottom: 10 }}
-        source={require('../../assets/icon.png')}
-        PlaceholderContent={<ActivityIndicator />}
-      />
-      <Button
-        onPress={() => {
-          if (status === 'logged-out') {
-            login();
-          } else {
-            navigation.navigate('Play');
-          }
-        }}
-        title="Play"
-      />
-      {/* <Button
-        onPress={() => {
-          navigation.navigate('OfflineGame');
-        }}
-        title="Play offline"
-      /> */}
+      <View style={styles.shadowView}>
+        <Image
+          style={{
+            height: 100,
+            width: 100,
+            marginBottom: 10,
+          }}
+          source={require('../../assets/icon.png')}
+          PlaceholderContent={<ActivityIndicator />}
+        />
+      </View>
+      <View style={styles.shadowView}>
+        <Button
+          onPress={() => {
+            if (status === 'logged-out') {
+              login();
+            } else {
+              navigation.navigate('Play');
+            }
+          }}
+          title="Play"
+        />
+      </View>
+      <View style={styles.savedBtn}>
+        <Icon
+          onPress={() => navigation.navigate('Saved')}
+          style={{ color: '#b0d8d6' }}
+          name="save"
+          size={52}
+        />
+      </View>
+      <View style={styles.settingsBtn}>
+        <Icon
+          onPress={() => navigation.navigate('Settings')}
+          style={{ color: '#b0d8d6' }}
+          name="settings"
+          size={52}
+        />
+      </View>
     </View>
   );
 };
@@ -66,6 +85,25 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: '100%',
+  },
+  shadowView: {
+    borderRadius: 50,
+    shadowColor: '#171717',
+    shadowOffset: { width: -5, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  settingsBtn: {
+    padding: 10,
+    position: 'absolute',
+    bottom: 15,
+    right: 15,
+  },
+  savedBtn: {
+    padding: 10,
+    position: 'absolute',
+    bottom: 15,
+    right: 90,
   },
 });
 

@@ -1,14 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
-import { useChatGpt, ChatGptError } from 'react-native-chatgpt';
+import { useChatGpt } from 'react-native-chatgpt';
 import { Button, Text, Input, ListItem } from '@rneui/themed';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import renderIf from '../utils/renderIf';
 import { Dimensions } from 'react-native';
+import { connect } from 'react-redux';
 
-const ChatGPTGame = () => {
+const ChatGPTGame = (props) => {
+  const { movieAmount } = props;
   const [gameType, setGameType] = useState('');
   const [playerText, setPlayerText] = useState('');
   const [leftArray, setLeftArray] = useState([]);
@@ -56,7 +58,7 @@ const ChatGPTGame = () => {
   };
 
   initMessage = (playerText, gameType) => {
-    const messageToChatGPT = `Give me 32 random movies from the ${playerText} ${gameType}. Give me only the list. Do not say anything else.`;
+    const messageToChatGPT = `Give me ${movieAmount} random movies from the ${playerText} ${gameType}. Give me only the list. Do not say anything else.`;
     setRetrievingResponse(true);
     sendMessage({
       message: messageToChatGPT,
@@ -108,7 +110,7 @@ const ChatGPTGame = () => {
     if (index === 0) {
       return (
         <ListItem
-          containerStyle={{ backgroundColor: 'rgba(255,255,255,0.6)', height: 150, marginTop: 25 }}
+          containerStyle={{ backgroundColor: 'rgba(255,255,255,0.3)', height: 150, marginTop: 25 }}
           bottomDivider
         >
           <ListItem.Content>
@@ -138,8 +140,12 @@ const ChatGPTGame = () => {
         <Text h4 style={{ textAlign: 'center', color: '#b0d8d6' }}>
           Do you want to play with movies from a specific era or specific genre?
         </Text>
-        <Button onPress={() => setGameType('Era')} title="Era" />
-        <Button onPress={() => setGameType('Genre')} title="Genre" />
+        <View style={styles.shadowView}>
+          <Button onPress={() => setGameType('Era')} title="Era" />
+        </View>
+        <View style={styles.shadowView}>
+          <Button onPress={() => setGameType('Genre')} title="Genre" />
+        </View>
       </View>
     );
   }
@@ -197,7 +203,7 @@ const ChatGPTGame = () => {
       </View>
     );
   }
-  if (gameType && overallRankArray.length !== 32) {
+  if (gameType && overallRankArray.length !== movieAmount) {
     let currentRound = overallRankArray.length + 1;
     if (currArrIdx === leftArray.length) {
       splitArray(winningArray);
@@ -212,7 +218,7 @@ const ChatGPTGame = () => {
           style={styles.background}
         />
         <Text h4 style={{ textAlign: 'center', color: '#b0d8d6', marginBottom: 10 }}>
-          {`Round ${currentRound} of 32`}
+          {`Round ${currentRound} of ${movieAmount}`}
         </Text>
         <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity
@@ -231,7 +237,7 @@ const ChatGPTGame = () => {
       </View>
     );
   }
-  if (overallRankArray.length === 32) {
+  if (overallRankArray.length === movieAmount) {
     const reversedArray = overallRankArray.reverse();
     const numberedArray = reversedArray.map((item, index) => {
       return `${index + 1}. ${item}`;
@@ -304,6 +310,19 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: 'center',
   },
+  shadowView: {
+    borderRadius: 50,
+    shadowColor: '#171717',
+    shadowOffset: { width: -5, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
 });
 
-export default ChatGPTGame;
+const mapStateToProps = function (state) {
+  return {
+    movieAmount: state.persist.movieAmount,
+  };
+};
+
+export default connect(mapStateToProps)(ChatGPTGame);

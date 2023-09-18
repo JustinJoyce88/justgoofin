@@ -10,7 +10,8 @@ import theme from './theme/themeProvider';
 import { createStackNavigator } from '@react-navigation/stack';
 import Landing from './src/screens/Landing';
 import ChatGPTGame from './src/screens/ChatGPTGame';
-import OfflineGame from './src/screens/OfflineGame';
+import Saved from './src/screens/Saved';
+import Settings from './src/screens/Settings';
 
 const Stack = createStackNavigator();
 
@@ -19,21 +20,22 @@ const App = () => {
   const myPersistor = getPersistor();
   return (
     <Provider store={myStore}>
-      <ThemeProvider theme={theme}>
-        <ChatGptProvider>
-          <PersistGate persistor={myPersistor}>
+      <PersistGate persistor={myPersistor}>
+        <ThemeProvider theme={theme}>
+          <ChatGptProvider>
             <SafeAreaView style={styles.container}>
               <NavigationContainer>
-              <Stack.Navigator initialRouteName="Home">
-                <Stack.Screen name="Home" component={Landing} />
-                <Stack.Screen name="Play" component={ChatGPTGame} />
-                <Stack.Screen name="OfflineGame" component={OfflineGame} />
-              </Stack.Navigator>
+                <Stack.Navigator initialRouteName="Home">
+                  <Stack.Screen name="Home" component={Landing} />
+                  <Stack.Screen name="Play" component={ChatGPTGame} />
+                  <Stack.Screen name="Settings" component={Settings} />
+                  <Stack.Screen name="Saved" component={Saved} />
+                </Stack.Navigator>
               </NavigationContainer>
             </SafeAreaView>
-          </PersistGate>
-        </ChatGptProvider>
-      </ThemeProvider>
+          </ChatGptProvider>
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   );
 };

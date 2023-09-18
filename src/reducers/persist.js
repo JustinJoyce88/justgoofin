@@ -1,33 +1,14 @@
 import * as constant from '../constants/constants';
 
 const initialState = {
-  user: {
-    authToken: '',
-    userName: '',
-  },
-  loggedIn: false
+  movieAmount: 32,
 };
 const persistReducer = (state = initialState, action) => {
   switch (action.type) {
-    case constant.LOGGED_IN:
+    case constant.MOVIE_AMOUNT:
       return {
         ...state,
-        loggedIn: action.payload,
-      };
-    case constant.UPDATE_USER:
-      return {
-        ...state,
-        user: action.payload,
-      };
-    case constant.LOGOUT_USER:
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          authToken: '',
-          userName: '',
-        },
-        loggedIn: false,
+        movieAmount: action.payload,
       };
     default:
       return state;
