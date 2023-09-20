@@ -9,12 +9,12 @@ import { bindActionCreators } from 'redux';
 import { FlatList } from 'react-native-gesture-handler';
 import { dummySaves } from '../data/dummySaves';
 
-const Saved = (props) => {
+const SavedDisplay = (props) => {
   const { actions, savedMovieList, navigation } = props;
   renderItem = (item) => {
     return (
       <ListItem
-        onPress={() => navigation.navigate('SavedDisplay', { item })}
+        onPress={() => navigation.navigate('Play')}
         containerStyle={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
         bottomDivider
       >
@@ -75,4 +75,4 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(ActionCreators, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Saved);
+export default connect(mapStateToProps, mapDispatchToProps)(SavedDisplay);

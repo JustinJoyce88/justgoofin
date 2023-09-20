@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: '100%',
+    backgroundColor: 'transparent',
   },
   versionText: {
     color: 'black',

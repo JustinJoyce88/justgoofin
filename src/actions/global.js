@@ -13,3 +13,10 @@ export const setMovieAmount = payload => {
     payload,
   };
 };
+
+export const updateSavedMovieList = payload => {
+  return {
+    type: constant.ADD_MOVIE_LIST,
+    payload,
+  };
+};

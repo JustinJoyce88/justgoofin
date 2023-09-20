@@ -17,18 +17,14 @@ const Login = (props) => {
         style={styles.background}
       />
       <Text h2 style={{ marginBottom: 5, textAlign: 'center', color: '#b0d8d6' }}>
-        Head 2 Head
+        This or That
       </Text>
       <Text h6 style={{ marginBottom: 20, textAlign: 'center', color: '#b0d8d6' }}>
         Rank movies randomly picked by ChatGPT
       </Text>
       <View style={styles.shadowView}>
         <Image
-          style={{
-            height: 100,
-            width: 100,
-            marginBottom: 10,
-          }}
+          style={styles.image}
           source={require('../../assets/icon.png')}
           PlaceholderContent={<ActivityIndicator />}
         />
@@ -73,11 +69,9 @@ const styles = StyleSheet.create({
   },
   image: {
     alignSelf: 'center',
-    width: 128,
-    height: 128,
-    resizeMode: 'contain',
-    borderRadius: 64,
-    marginBottom: 32,
+    width: 100,
+    height: 100,
+    marginBottom: 10,
   },
   background: {
     position: 'absolute',

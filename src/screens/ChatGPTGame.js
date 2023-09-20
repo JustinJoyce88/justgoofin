@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import renderIf from '../utils/renderIf';
 import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
+import SaveModal from '../modals/SaveModal';
 
 const ChatGPTGame = (props) => {
   const { movieAmount } = props;
@@ -19,6 +20,7 @@ const ChatGPTGame = (props) => {
   const [currArrIdx, setCurrArrIdx] = useState(0);
   const [winningArray, setWinningArray] = useState([]);
   const [overallRankArray, setOverallRankArray] = useState([]);
+  const [saveModal, showSaveModal] = useState(false);
   const { sendMessage } = useChatGpt();
   const [retrievingResponse, setRetrievingResponse] = useState(false);
 
@@ -150,7 +152,8 @@ const ChatGPTGame = (props) => {
     );
   }
 
-  if (gameType && !rightArray.length && !leftArray.length) {
+  // if (gameType && !rightArray.length && !leftArray.length) {
+    if(false){
     return (
       <View style={styles.container}>
         <LinearGradient
@@ -203,7 +206,8 @@ const ChatGPTGame = (props) => {
       </View>
     );
   }
-  if (gameType && overallRankArray.length !== movieAmount) {
+  // if (gameType && overallRankArray.length !== movieAmount) {
+    if(false){
     let currentRound = overallRankArray.length + 1;
     if (currArrIdx === leftArray.length) {
       splitArray(winningArray);
@@ -237,7 +241,8 @@ const ChatGPTGame = (props) => {
       </View>
     );
   }
-  if (overallRankArray.length === movieAmount) {
+  // if (overallRankArray.length === movieAmount) {
+    if(true){
     const reversedArray = overallRankArray.reverse();
     const numberedArray = reversedArray.map((item, index) => {
       return `${index + 1}. ${item}`;
@@ -258,8 +263,8 @@ const ChatGPTGame = (props) => {
         <Text h6 style={{ textAlign: 'center', color: '#b0d8d6', marginBottom: 10, marginTop: 5 }}>
           You can save results for viewing later.
         </Text>
-        <TouchableOpacity style={{ padding: 10 }}>
-          <Icon name="save" size={24} color="rgba(255,255,255,0.7)" onPress={() => saveResults()} />
+        <TouchableOpacity onPress={() => showSaveModal(true)} style={{ padding: 10 }}>
+          <Icon name="save" size={24} color="rgba(255,255,255,0.7)" />
         </TouchableOpacity>
         <FlatList
           style={{ width: '100%' }}
@@ -267,6 +272,7 @@ const ChatGPTGame = (props) => {
           data={numberedArray}
           renderItem={(item, index) => renderItem(item, index)}
         />
+        {renderIf(saveModal, <SaveModal showSaveModal={(show) => showSaveModal(show)} />)}
       </View>
     );
   }

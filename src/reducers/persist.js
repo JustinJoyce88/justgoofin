@@ -10,6 +10,11 @@ const persistReducer = (state = initialState, action) => {
         ...state,
         movieAmount: action.payload,
       };
+    case constant.SAVED_MOVIE_LIST:
+      return {
+        ...state,
+        savedMovieList: action.payload,
+      };
     default:
       return state;
   }
