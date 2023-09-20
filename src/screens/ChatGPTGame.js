@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
 import { useChatGpt } from 'react-native-chatgpt';
 import { Button, Text, Input, ListItem } from '@rneui/themed';
@@ -7,11 +7,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import renderIf from '../utils/renderIf';
 import { Dimensions } from 'react-native';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import SaveModal from '../modals/SaveModal';
 
-const ChatGPTGame = (props) => {
-  const { movieAmount } = props;
+const ChatGPTGame = () => {
   const [gameType, setGameType] = useState('');
   const [playerText, setPlayerText] = useState('');
   const [leftArray, setLeftArray] = useState([]);
@@ -20,9 +19,12 @@ const ChatGPTGame = (props) => {
   const [currArrIdx, setCurrArrIdx] = useState(0);
   const [winningArray, setWinningArray] = useState([]);
   const [overallRankArray, setOverallRankArray] = useState([]);
+  const [finalizedArray, setFinalizedArray] = useState([]);
   const [saveModal, showSaveModal] = useState(false);
+  const [saveButton, showSaveButton] = useState(true);
   const { sendMessage } = useChatGpt();
   const [retrievingResponse, setRetrievingResponse] = useState(false);
+  const movieAmount = useSelector((state) => state.persist.movieAmount);
 
   checkForErrors = () => {
     if (gameType === 'Era') {
@@ -76,26 +78,35 @@ const ChatGPTGame = (props) => {
     });
   };
 
+  finalizeList = () => {
+    const reversedArray = overallRankArray.reverse();
+    const numberedArray = reversedArray.map((item, index) => {
+      return `${index + 1}. ${item}`;
+    });
+    setFinalizedArray(numberedArray);
+  };
+
   nextStep = (arrayNotPicked, playerChoice, sidePressed) => {
     if (leftArray.length === 1 && sidePressed === 'left') {
       setOverallRankArray((prevArray) => [...prevArray, rightArray[0]]);
       setOverallRankArray((prevArray) => [...prevArray, leftArray[0]]);
+      setTimeout(() => {
+        finalizeList();
+      }, 1);
       return;
     }
     if (rightArray.length === 1 && sidePressed === 'right') {
       setOverallRankArray((prevArray) => [...prevArray, leftArray[0]]);
       setOverallRankArray((prevArray) => [...prevArray, rightArray[0]]);
+      setTimeout(() => {
+        finalizeList();
+      }, 1);
       return;
     }
     setWinningArray((prevArray) => [...prevArray, playerChoice]);
     setOverallRankArray((prevArray) => [...prevArray, arrayNotPicked[currArrIdx]]);
     setCurrArrIdx(currArrIdx + 1);
   };
-
-  saveResults = () => {
-    console.log('NEED TO SAVE TO REDUX PERSIST');
-  };
-
   getColor = () => {
     return (
       'hsl(' +
@@ -152,8 +163,7 @@ const ChatGPTGame = (props) => {
     );
   }
 
-  // if (gameType && !rightArray.length && !leftArray.length) {
-    if(false){
+  if (gameType && !rightArray.length && !leftArray.length) {
     return (
       <View style={styles.container}>
         <LinearGradient
@@ -206,8 +216,7 @@ const ChatGPTGame = (props) => {
       </View>
     );
   }
-  // if (gameType && overallRankArray.length !== movieAmount) {
-    if(false){
+  if (gameType && overallRankArray.length !== movieAmount) {
     let currentRound = overallRankArray.length + 1;
     if (currArrIdx === leftArray.length) {
       splitArray(winningArray);
@@ -241,12 +250,7 @@ const ChatGPTGame = (props) => {
       </View>
     );
   }
-  // if (overallRankArray.length === movieAmount) {
-    if(true){
-    const reversedArray = overallRankArray.reverse();
-    const numberedArray = reversedArray.map((item, index) => {
-      return `${index + 1}. ${item}`;
-    });
+  if (overallRankArray.length === movieAmount) {
     return (
       <View style={styles.container}>
         <LinearGradient
@@ -263,16 +267,35 @@ const ChatGPTGame = (props) => {
         <Text h6 style={{ textAlign: 'center', color: '#b0d8d6', marginBottom: 10, marginTop: 5 }}>
           You can save results for viewing later.
         </Text>
-        <TouchableOpacity onPress={() => showSaveModal(true)} style={{ padding: 10 }}>
-          <Icon name="save" size={24} color="rgba(255,255,255,0.7)" />
+        <TouchableOpacity
+          disabled={!saveButton}
+          onPress={() => showSaveModal(true)}
+          style={{ padding: 10 }}
+        >
+          <Icon
+            name={!saveButton ? 'checkmark-circle-outline' : 'save'}
+            size={24}
+            color={!saveButton ? '#daffe7' : 'rgba(255,255,255,0.7)'}
+          />
         </TouchableOpacity>
         <FlatList
           style={{ width: '100%' }}
           keyExtractor={(item, index) => index.toString()}
-          data={numberedArray}
+          data={finalizedArray}
           renderItem={(item, index) => renderItem(item, index)}
         />
-        {renderIf(saveModal, <SaveModal showSaveModal={(show) => showSaveModal(show)} />)}
+        {renderIf(
+          saveModal,
+          <SaveModal
+            numberedArray={finalizedArray}
+            showSaveModal={(show, dispatched) => {
+              showSaveModal(show);
+              if (dispatched === true) {
+                showSaveButton(false);
+              }
+            }}
+          />
+        )}
       </View>
     );
   }
@@ -285,14 +308,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
-  },
-  image: {
-    alignSelf: 'center',
-    width: 128,
-    height: 128,
-    resizeMode: 'contain',
-    borderRadius: 64,
-    marginBottom: 32,
   },
   background: {
     position: 'absolute',
@@ -325,10 +340,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = function (state) {
-  return {
-    movieAmount: state.persist.movieAmount,
-  };
-};
-
-export default connect(mapStateToProps)(ChatGPTGame);
+export default ChatGPTGame;

@@ -3,12 +3,12 @@ import { View, StyleSheet } from 'react-native';
 import { Text, CheckBox, Icon } from '@rneui/themed';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Dimensions } from 'react-native';
-import { connect } from 'react-redux';
-import * as globalActions from '../actions/global';
-import { bindActionCreators } from 'redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setMovieAmount } from '../reducers/persist';
 
-const Settings = (props) => {
-  const { actions, movieAmount } = props;
+const Settings = () => {
+  const movieAmount = useSelector((state) => state.persist.movieAmount);
+  const dispatch = useDispatch();
 
   const checkBoxes = [
     {
@@ -34,7 +34,7 @@ const Settings = (props) => {
           title={item.title}
           checked={item.title === movieAmount}
           onPress={() => {
-            actions.setMovieAmount(item.title);
+            dispatch(setMovieAmount(item.title));
           }}
           checkedIcon={
             <Icon
@@ -77,7 +77,7 @@ const Settings = (props) => {
         <Text>&#169; Justin Joyce</Text>
       </View>
       <View style={styles.versionText}>
-        <Text>V 0.1</Text>
+        <Text>V 1.0</Text>
       </View>
     </View>
   );
@@ -111,14 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = function (state) {
-  return {
-    movieAmount: state.persist.movieAmount,
-  };
-};
-const ActionCreators = { ...globalActions };
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(ActionCreators, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default Settings;

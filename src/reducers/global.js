@@ -1,17 +1,22 @@
-import * as constant from '../constants/constants';
+import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  loading: false,
-};
-const globalReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case constant.LOADING:
-      return {
-        ...state,
-        loading: action.payload,
-      };
-    default:
-      return state;
-  }
-};
-export default globalReducer;
+export const globalSlice = createSlice({
+  name: 'global',
+  initialState: {
+    loading: false,
+  },
+  reducers: {
+    setLoading: (state, action) => {
+      // Redux Toolkit allows us to write "mutating" logic in reducers. It
+      // doesn't actually mutate the state because it uses the Immer library,
+      // which detects changes to a "draft state" and produces a brand new
+      // immutable state based off those changes
+      state.loading = action.payload;
+    },
+  },
+});
+
+// Action creators are generated for each case reducer function
+export const { setLoading } = globalSlice.actions;
+
+export default globalSlice.reducer;

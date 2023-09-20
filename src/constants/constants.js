@@ -1,7 +1,0 @@
-export const LOADING = 'LOADING';
-
-//? PERSIST
-export const MOVIE_AMOUNT = 'MOVIE_AMOUNT';
-export const ADD_MOVIE_LIST = 'ADD_MOVIE_LIST';
-export const REMOVE_MOVIE_LIST = 'REMOVE_MOVIE_LIST';
-export const SAVED_MOVIE_LIST = 'SAVED_MOVIE_LIST';

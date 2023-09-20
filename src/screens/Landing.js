@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { useChatGpt } from 'react-native-chatgpt';
-import ChatGPTGame from './ChatGPTGame';
 import Login from '../components/Login';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const Landing = (props) => {
   const { status } = useChatGpt();

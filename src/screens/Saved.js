@@ -1,25 +1,33 @@
-import React, { useState, useRef } from 'react';
+import React  from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Button, Text, Input, ListItem, CheckBox, Icon } from '@rneui/themed';
+import {  Text, ListItem } from '@rneui/themed';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Dimensions } from 'react-native';
-import { connect } from 'react-redux';
-import * as globalActions from '../actions/global';
-import { bindActionCreators } from 'redux';
 import { FlatList } from 'react-native-gesture-handler';
-import { dummySaves } from '../data/dummySaves';
+import { useSelector, useDispatch } from 'react-redux';
+import { removeSavedMovieList } from '../reducers/persist';
+import renderIf from '../utils/renderIf';
 
 const Saved = (props) => {
-  const { actions, savedMovieList, navigation } = props;
-  renderItem = (item) => {
+  const { navigation } = props;
+  const savedMovieList = useSelector((state) => state.persist.savedMovieList);
+  const dispatch = useDispatch();
+  renderItem = (item, index) => {
     return (
       <ListItem
         onPress={() => navigation.navigate('SavedDisplay', { item })}
         containerStyle={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
         bottomDivider
       >
-        <ListItem.Content>
-          <ListItem.Title>{item.title}</ListItem.Title>
+        <ListItem.Content style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <ListItem.Title style={{ color: 'white', fontSize: 26 }}>{item.title}</ListItem.Title>
+          <Icon
+            onPress={() => dispatch(removeSavedMovieList(index))}
+            name="trash"
+            size={32}
+            color={'#FF5733'}
+          />
         </ListItem.Content>
       </ListItem>
     );
@@ -32,7 +40,14 @@ const Saved = (props) => {
         colors={['#3e6279', '#87aba9']}
         style={styles.background}
       />
-      <FlatList data={dummySaves} renderItem={({ item }) => renderItem(item)} />
+      {renderIf(
+        !savedMovieList.length,
+        <Text style={styles.noMoviesText}>
+          {`No saved movies.
+Play the game and save something.`}
+        </Text>
+      )}
+      <FlatList data={savedMovieList} renderItem={({ item, index }) => renderItem(item, index)} />
     </View>
   );
 };
@@ -51,28 +66,12 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: 'transparent',
   },
-  versionText: {
-    color: 'black',
-    position: 'absolute',
-    bottom: 30,
-    right: 15,
-  },
-  copyText: {
-    color: 'black',
-    position: 'absolute',
-    bottom: 15,
-    right: 15,
+  noMoviesText: {
+    textAlign: 'center',
+    color: 'rgba(255,255,255, 0.5)',
+    fontSize: 24,
+    marginTop: 10,
   },
 });
 
-const mapStateToProps = function (state) {
-  return {
-    savedMovieList: state.persist.savedMovieList,
-  };
-};
-const ActionCreators = { ...globalActions };
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(ActionCreators, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Saved);
+export default Saved;
